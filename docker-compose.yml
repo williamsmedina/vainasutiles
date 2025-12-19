@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    environment:
+      NEO4J_AUTH: "neo4j/neo4j"
+    volumes:
+      - neo4j_data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+
+  bloodhound:
+    image: bloodhound:latest
+    container_name: bloodhound
+    depends_on:
+      - neo4j
+    environment:
+      NEO4J_URI: "bolt://neo4j:7687"
+      NEO4J_USER: "neo4j"
+      NEO4J_PASS: "neo4j"
+    ports:
+      - "7475:7475"
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
